@@ -11,5 +11,7 @@ func ReadCSV(filePath string) ([][]string, error) {
 		return nil, err
 	}
 	defer f.Close()
-	return csv.NewReader(f).ReadAll()
+	reader := csv.NewReader(f)
+	reader.FieldsPerRecord = -1
+	return reader.ReadAll()
 }
