@@ -1,0 +1,11 @@
+influxdb:
+  # URL for InfluxDB, including scheme, hostname and port
+  url: http://localhost:8086
+  # For InfluxDB 1.8 the auth_token is username and password in format "username:password"
+  auth_token: changethis
+  # This is ignored for InfluxDB 1.8
+  org: ""
+  # For InfluxDB 1.8 the bucket is the database name, with optional retention policy in format "database/retentionpolicy"
+  bucket: tesla
+  # Measurement
+  measurement: tesla

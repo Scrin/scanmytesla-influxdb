@@ -1,0 +1,15 @@
+package reader
+
+import (
+	"encoding/csv"
+	"os"
+)
+
+func ReadCSV(filePath string) ([][]string, error) {
+	f, err := os.Open(filePath)
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+	return csv.NewReader(f).ReadAll()
+}

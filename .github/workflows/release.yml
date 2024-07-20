@@ -1,0 +1,39 @@
+name: release
+
+on:
+  release:
+    types:
+      - created
+
+jobs:
+  binaries:
+    name: binaries
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 1
+      matrix:
+        goos: [linux, windows, darwin]
+        goarch: [amd64, arm64, arm]
+        exclude:
+          - goos: windows
+            goarch: arm64
+          - goos: windows
+            goarch: arm
+          - goos: darwin
+            goarch: arm
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Build binary
+        uses: wangyoucao577/go-release-action@v1.22
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          goos: ${{ matrix.goos }}
+          goarch: ${{ matrix.goarch }}
+          goversion: 1.17
+          ldflags: "-X github.com/Scrin/scanmytesla-influxdb/common/version.Version=${{ github.event.release.tag_name }}"
+          project_path: ./cmd/scanmytesla-influxdb
+          binary_name: scanmytesla-influxdb
+          retry: 10
+          md5sum: false
+          overwrite: true
