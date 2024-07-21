@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"gopkg.in/yaml.v3"
 )
@@ -21,11 +22,19 @@ type Config struct {
 }
 
 func ReadConfig() (Config, error) {
-	if _, err := os.Stat("./config.yml"); errors.Is(err, os.ErrNotExist) {
-		return Config{}, fmt.Errorf(fmt.Sprintf("No config found! Tried to open \"%s\"", "./config.yml"))
+	file := "./config.yml"
+	if _, err := os.Stat(file); errors.Is(err, os.ErrNotExist) {
+		ex, err := os.Executable()
+		if err != nil {
+			return Config{}, err
+		}
+		file = filepath.Dir(ex) + "/config.yml"
+		if _, err := os.Stat(file); errors.Is(err, os.ErrNotExist) {
+			return Config{}, fmt.Errorf(fmt.Sprintf(`No config found! Tried to open "./config.yml" or "%s"`, file))
+		}
 	}
 
-	f, err := os.Open("./config.yml")
+	f, err := os.Open(file)
 	if err != nil {
 		return Config{}, err
 	}
